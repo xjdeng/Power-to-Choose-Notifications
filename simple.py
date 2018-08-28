@@ -79,7 +79,6 @@ def format_message(days, filepath = None):
 if __name__ == "__main__":
     webhook, webhook_key, days, zipcode = get_settings()
     ifttt = IFTTT(webhook_key, webhook)
-    #https://www.twilio.com/docs/libraries/python
     try:
         prices = run(zipcode)
         record(prices)
