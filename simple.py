@@ -2,8 +2,10 @@ from selenium import webdriver
 import time
 import os
 import pandas as pd
+import numpy as np
 from fake_useragent import UserAgent
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import datetime as dt
 
 def get_dir():
     #http://www.karoltomala.com/blog/?p=622
@@ -22,5 +24,20 @@ def run(zipcode):
     view_results.click()
     time.sleep(1)
     price_eles = browser.find_elements_by_class_name("price")
-    prices = [float(p.text[0:-1]) for p in price_eles]
-    return prices, price_eles
+    prices = [float(p.text[0:-1])/100 for p in price_eles]
+    return prices
+
+def record(prices, filepath = None):
+    if filepath is None:
+        filepath = get_dir() + "/" + "simple.csv"
+    today = dt.date.today().strftime("%Y-%m-%d")
+    price_df = pd.DataFrame()
+    price_df['Average'] = [np.mean(prices)]
+    price_df['Min'] = [min(prices)]
+    price_df.index = [today]
+    if os.path.isfile(filepath) == True:
+        prev_df = pd.read_csv(filepath, index_col = 0)
+        if prev_df.index[-1] != today:
+            price_df = prev_df.append(price_df)
+    price_df.to_csv(filepath)
+        
