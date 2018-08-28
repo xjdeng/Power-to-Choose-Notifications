@@ -55,3 +55,20 @@ def get_settings(settings = None):
     mobile = settings2[3][19:]
     days = int(settings2[4][31:])
     return sid, auth_key, mobile, days
+
+def format_message(days, filepath = None):
+    if filepath is None:
+        filepath = get_dir() + "/" + "simple.csv"
+    price_df = pd.read_csv(filepath, index_col = 0)
+    tavg = price_df['Average'][-1]
+    tmin = price_df['Min'][-1]
+    output = ['Today: average={}, min={}'.format(tavg, tmin)]
+    if len(price_df) > 1:
+        yavg = price_df['Average'][-2]
+        ymin = price_df['Average'][-2]
+        output.append('Yesterday: average={}, min={}'.format(yavg, ymin))
+    n = min(days, len(price_df))
+    navg = np.mean(price_df['Average'][-n:])
+    nmin = min(price_df['Min'][-n:])
+    output.append('Last {} days: average={}, min={}'.format(n, navg, nmin))
+    return output
