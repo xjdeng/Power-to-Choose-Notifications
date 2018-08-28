@@ -6,6 +6,7 @@ import numpy as np
 from fake_useragent import UserAgent
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import datetime as dt
+from py2ifttt import IFTTT
 
 def get_dir():
     #http://www.karoltomala.com/blog/?p=622
@@ -50,11 +51,11 @@ def get_settings(settings = None):
     except IOError as e:
         print("You didn't create a settings file!")
         raise(e)
-    sid = settings2[1][19:]
-    auth_key = settings2[2][18:]
-    mobile = settings2[3][19:]
-    days = int(settings2[4][31:])
-    return sid, auth_key, mobile, days
+    webhook = settings2[1][19:]
+    webhook_key = settings2[2][18:]
+    days = int(settings2[3][31:])
+    zipcode = int(settings2[4][8:])
+    return webhook, webhook_key, days, zipcode
 
 def format_message(days, filepath = None):
     if filepath is None:
@@ -67,8 +68,22 @@ def format_message(days, filepath = None):
         yavg = price_df['Average'][-2]
         ymin = price_df['Average'][-2]
         output.append('Yesterday: average={}, min={}'.format(yavg, ymin))
+    else:
+        output.append("")
     n = min(days, len(price_df))
     navg = np.mean(price_df['Average'][-n:])
     nmin = min(price_df['Min'][-n:])
     output.append('Last {} days: average={}, min={}'.format(n, navg, nmin))
     return output
+
+if __name__ == "__main__":
+    webhook, webhook_key, days, zipcode = get_settings()
+    ifttt = IFTTT(webhook_key, webhook)
+    #https://www.twilio.com/docs/libraries/python
+    try:
+        prices = run(zipcode)
+        record(prices)
+        output = format_message(days)
+        ifttt.notify(output[0], output[1], output[2])
+    except Exception as e:
+        ifttt.notify("Power to Choose Failed! {}".format(e),"","")
