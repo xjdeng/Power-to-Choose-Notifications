@@ -24,7 +24,7 @@ pip install py2ifttt fake_useragent
 
 
 
-##IFTTT Setup
+## IFTTT Setup
 
 
 
