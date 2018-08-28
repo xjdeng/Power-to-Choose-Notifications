@@ -54,3 +54,18 @@ Next, your **IFTTT Webhook Key** can be found [here](https://ifttt.com/services/
 python simple.py
 ```
 
+
+
+## Scheduling
+
+You'll need to schedule it to run once at the same time everyday for this to function correctly, especially the parts that notify you yesterday's prices and the avg and min prices of the last N days.  Refer to your OS for the precise instructions.  In Windows, use the Task Scheduler and create a task that runs the above command from the folder where you cloned this repository.  On a Mac or Linux, run the following and add it to your crontab:
+
+```
+crontab -e
+```
+
+Then add the following line if you want to run it, say, everyday at 7am:
+
+0 7 * * * **/path/to/python /path/to/simple.py**
+
+Where you replace the bold statements with the respective paths to your python interpreter and simple.py.  NOTE: you may need to dig around to find where the python interpreter for your Anaconda environment is installed!
