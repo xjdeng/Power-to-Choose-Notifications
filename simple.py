@@ -40,4 +40,18 @@ def record(prices, filepath = None):
         if prev_df.index[-1] != today:
             price_df = prev_df.append(price_df)
     price_df.to_csv(filepath)
-        
+
+def get_settings(settings = None):
+    if settings is None:
+        settings = get_dir() + "/" + "settings.cfg"
+    try:
+        with open(settings, "r") as f:
+            settings2 = f.read().split('\n')
+    except IOError as e:
+        print("You didn't create a settings file!")
+        raise(e)
+    sid = settings2[1][19:]
+    auth_key = settings2[2][18:]
+    mobile = settings2[3][19:]
+    days = int(settings2[4][31:])
+    return sid, auth_key, mobile, days
