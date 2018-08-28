@@ -22,7 +22,11 @@ conda install -c conda-forge phantomjs
 pip install py2ifttt fake_useragent
 ```
 
+
+
 ##IFTTT Setup
+
+
 
 Then sign up for an [IFTTT](www.ifttt.com) account if you don't already have one.  This program uses IFTTT to manage the notifications.
 
